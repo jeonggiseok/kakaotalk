@@ -2,33 +2,28 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>카카오톡 자동 실행</title>
+  <title>스킴 리다이렉터</title>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // 1) 카카오톡 앱 열기
-      window.location.href = 'kakaotalk://app';
-
-      // 2) 짧은 딜레이 후 봇 메시지 전송 스킴 호출
-      setTimeout(() => {
-        const botMessage = encodeURIComponent(
-          '로코 프로토콜 벗 20만원에 팝니다.\n' +
-          '호스팅제입니다.\n' +
-          'https://www.giseok.xyz/.'
-        );
-        window.location.href =
-          `kakaobot://sendtext?action=block&type=bot&message=${botMessage}`;
-      }, 500);
+    window.addEventListener('DOMContentLoaded', () => {
+      // 1) 현재 path 가져오기 (맨 앞 슬래시 제거)
+      let target = decodeURIComponent(location.pathname.slice(1));
+      // 2) query string도 붙이고 싶으면 location.search 사용
+      if (!target) {
+        document.body.innerHTML = '<p>잘못된 경로입니다.</p>';
+        return;
+      }
+      // 3) 그 값으로 곧장 리다이렉트
+      location.replace(target);
     });
   </script>
 </head>
 <body>
-  <h1>카카오톡 실행 중…</h1>
-  <p>자동 실행이 안 되면 아래를 클릭하세요.</p>
-  <p>
-    <a href="kakaotalk://app">1) 카카오톡 열기</a><br>
-    <a href="kakaobot://sendtext?action=block&type=bot&message=로코%20프로토콜%20벗%2020만원에%20팝니다.">
-      2) 채팅 메시지 보내기
-    </a>
+  <p>리다이렉트 중… 자동으로 실행되지 않으면
+     <a id="manual" href="#">여기를 눌러주세요.</a>
   </p>
+  <script>
+    // 수동 링크도 걸어두기
+    document.getElementById('manual').href = decodeURIComponent(location.pathname.slice(1));
+  </script>
 </body>
 </html>
